@@ -9,7 +9,7 @@
  */
 class ENotificationWidget extends CWidget {
     
-    public $id = 'alert-widget';
+    public $id = 'notification-widget';
     public $options = array();
     public $enableUserFlash = false;
     public $userComponentId = 'user';

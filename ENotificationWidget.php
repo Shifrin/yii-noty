@@ -1,0 +1,147 @@
+<?php
+
+/**
+ * ENotificationWidget
+ * It's work with noty jQuery plugin v2.3.5
+ * noty plugin http://ned.im/noty/
+ *
+ * @author Mohammad
+ */
+class ENotificationWidget extends CWidget {
+    
+    public $id = 'alert-widget';
+    public $options = array();
+    public $enableUserFlash = false;
+    public $userComponentId = 'user';
+    public $enableFontAwesome = false;
+    public $enablebuttonCss = false;
+    protected $types = array(
+        'error' => 'error',
+        'success' => 'success',
+        'info' => 'information',
+        'warning' => 'warning',
+        'alert' => 'alert'
+    );
+    protected $icons = array(
+        'error' => 'fa fa-times-circle',
+        'success' => 'fa fa-check-circle',
+        'information' => 'fa fa-info-circle',
+        'warning' => 'fa fa-exclamation-circle',
+        'alert' => 'fa fa-bell-o',
+        'notification' => 'fa fa-bell-o',
+    );
+
+    public function init() {
+        $this->registerAssets();
+        
+        if (isset($this->options['test'])) {
+            unset($this->options['text']);
+        }
+        
+        if (isset($this->options['type'])) {
+            unset($this->options['type']);
+        }
+    }
+
+    public function run() {
+        $id = $this->id;
+        $options = CJavaScript::encode($this->options);
+        $cs = Yii::app()->clientScript;
+        $js = '';
+        $messages = '';
+        
+        if ($this->enableUserFlash) {
+            $user = Yii::app()->getComponent($this->userComponentId);
+            $messages = $user->getFlashes();
+        }
+        
+        /* @var $message Notification */
+        foreach ($messages as $key => $value) {
+            if (empty($value)) {
+                continue;
+            }
+            
+            $type = $this->verifyType($key);
+            $icon = $this->getIcon($type);
+            $text = is_array($value) ? implode(' ', $value) : $value;
+            $message = $icon . $text;
+            $js .= "var $type = generateAlert('$id');\n";
+            $js .= '$.noty.setText(' . $type . '.options.id, \'' . $message . '\');' . "\n";
+            $js .= '$.noty.setType(' . $type . '.options.id, \'' . $type . '\');' . "\n";
+        }
+        
+        $cs->registerScript("noty#{$id}", "
+            function generateAlert(widgetId, options) {
+                var finalOptions = $.extend({}, $options, options);
+                var n = noty(finalOptions);
+                
+                return n;
+            }
+            
+            $js
+            "
+        , CClientScript::POS_READY);
+    }
+
+    /**
+     * Register necessary noty scripts and styles
+     */
+    protected function registerAssets() {
+        $dir = dirname(__FILE__) . '/assets';
+        $assetsDir = Yii::app()->assetManager->publish($dir);
+        $cs = Yii::app()->clientScript;
+
+        // Required CSS for noty
+        $cs->registerCssFile($assetsDir . '/css/animate.css');
+        // Register only if it is required
+        if ($this->enablebuttonCss) {
+            $cs->registerCssFile($assetsDir . '/css/buttons.css');
+        }
+        
+        if ($this->enableFontAwesome) {
+            $cs->registerCssFile($assetsDir . '/css/font-awesome.min.css');
+        }
+        
+        // jQuery
+        $cs->registerCoreScript('jquery');
+        // noty JS
+        $cs->registerScriptFile($assetsDir . '/js/noty/packaged/jquery.noty.packaged.min.js', CClientScript::POS_END);
+        
+        // noty theme JS
+        if ($this->options['theme'] == 'bootstrapTheme') {
+            $cs->registerScriptFile($assetsDir . '/js/noty/themes/bootstrap.js', CClientScript::POS_END);
+        } elseif ($this->options['theme'] == 'relax') {
+            $cs->registerScriptFile($assetsDir . '/js/noty/themes/relax.js', CClientScript::POS_END);
+        } else {
+            $cs->registerScriptFile($assetsDir . '/js/noty/themes/default.js', CClientScript::POS_END);
+        }
+    }
+    
+    /**
+     * Verify type, if not return defalut type
+     * @param string $type Type to verify
+     * @return string
+     */
+    protected function verifyType($type) {
+        if (array_key_exists($type, $this->types)) {
+            return $this->types[$type];
+        }
+        
+        return 'notification';
+    }
+    
+    /**
+     * Get icon according to the type
+     * @param type $type
+     */
+    protected function getIcon($type) {
+        if (!$this->enableFontAwesome) {
+            return '';
+        }
+        
+        $class = $this->icons[$type];
+        
+        return CHtml::tag('i', array('class' => $class), '') . ' ';
+    }
+
+}

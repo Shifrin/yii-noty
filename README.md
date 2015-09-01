@@ -1,5 +1,5 @@
 # yii-noty
-Yii widget for Noty jQuery notification plugin
+Yii widget for Noty jQuery notification plugin, [Visit Noty](http://ned.im/noty/#/about)
 
 ## Installation:
 Download the zip file and unzip it in your project extension folder `webroot/protected/extensions/` and rename `yii-noty-master` to `yii-noty`
@@ -49,6 +49,4 @@ Replace `type` with available types
   * warning
   * information
   * alert
-
-  
 

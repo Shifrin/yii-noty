@@ -2,7 +2,7 @@
 Yii widget for Noty jQuery notification plugin
 
 ## Installation:
-Download the zip file and unzip it in your project extension folder `webroot/protected/extensions/`
+Download the zip file and unzip it in your project extension folder `webroot/protected/extensions/` and rename `yii-noty-master` to `yii-noty`
 
 ## Usage Details:
 Add the widget in your main layout file like below,

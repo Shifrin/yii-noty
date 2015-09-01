@@ -2,18 +2,20 @@
 
 /**
  * ENotificationWidget
- * It's work with noty jQuery plugin v2.3.5
+ * It's a widget for alert messages to the end user
+ * This widget build with noty jQuery plugin v2.3.5
  * noty plugin http://ned.im/noty/
  *
- * @author Mohammad
+ * @author Mohammad Shifreen
  */
 class ENotificationWidget extends CWidget {
     
     public $id = 'notification-widget';
     public $options = array();
-    public $enableUserFlash = false;
+    public $enableUserFlash = true;
     public $userComponentId = 'user';
-    public $enableFontAwesome = false;
+    public $enableIcon = false;
+    public $enableFontAwesomeCss = false;
     public $enablebuttonCss = false;
     protected $types = array(
         'error' => 'error',
@@ -55,7 +57,6 @@ class ENotificationWidget extends CWidget {
             $messages = $user->getFlashes();
         }
         
-        /* @var $message Notification */
         foreach ($messages as $key => $value) {
             if (empty($value)) {
                 continue;
@@ -70,6 +71,7 @@ class ENotificationWidget extends CWidget {
             $js .= '$.noty.setType(' . $type . '.options.id, \'' . $type . '\');' . "\n";
         }
         
+        // Registering the script here, it will be available for globaly
         $cs->registerScript("noty#{$id}", "
             function generateAlert(widgetId, options) {
                 var finalOptions = $.extend({}, $options, options);
@@ -98,7 +100,7 @@ class ENotificationWidget extends CWidget {
             $cs->registerCssFile($assetsDir . '/css/buttons.css');
         }
         
-        if ($this->enableFontAwesome) {
+        if ($this->enableFontAwesomeCss) {
             $cs->registerCssFile($assetsDir . '/css/font-awesome.min.css');
         }
         
@@ -132,10 +134,10 @@ class ENotificationWidget extends CWidget {
     
     /**
      * Get icon according to the type
-     * @param type $type
+     * @param string $type
      */
     protected function getIcon($type) {
-        if (!$this->enableFontAwesome) {
+        if (!$this->enableIcon) {
             return '';
         }
         

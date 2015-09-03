@@ -1,12 +1,16 @@
 <?php
 
 /**
- * ENotificationWidget
- * It's a widget for alert messages to the end user
+ * ENotificationWidget Class File
+ * 
+ * It's a widget for messages that can be shown to the end user
  * This widget build with noty jQuery plugin v2.3.5
- * noty plugin http://ned.im/noty/
+ * @link http://ned.im/noty/
  *
  * @author Mohammad Shifreen
+ * @link http://www.yiiframework.com/extension/yii-noty/
+ * @copyright 2015 Mohammed Shifreen
+ * @license https://github.com/Shifrin/yii-noty/blob/master/LICENSE.md
  */
 class ENotificationWidget extends CWidget {
     
@@ -99,7 +103,7 @@ class ENotificationWidget extends CWidget {
         if ($this->enablebuttonCss) {
             $cs->registerCssFile($assetsDir . '/css/buttons.css');
         }
-        
+        // Register only if it is required
         if ($this->enableFontAwesomeCss) {
             $cs->registerCssFile($assetsDir . '/css/font-awesome.min.css');
         }
@@ -129,6 +133,7 @@ class ENotificationWidget extends CWidget {
             return $this->types[$type];
         }
         
+        // Return default
         return 'notification';
     }
     

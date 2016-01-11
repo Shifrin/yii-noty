@@ -8,7 +8,8 @@ Download the zip file and unzip it in your project extension folder `webroot/pro
 
 ## Usage Details:
 Add the widget in your main layout file like below,
-```
+```php
+<?php
 $this->widget('ext.yii-noty.ENotificationWidget', array(
     'options' => array( // you can add js options here, see noty plugin page for available options
       'dismissQueue' => true,
@@ -25,10 +26,11 @@ $this->widget('ext.yii-noty.ENotificationWidget', array(
   'enableIcon' => true,
   'enableFontAwesomeCss' => true,
 ));
+?>
 ```
 
 This widget will create a JS function `generateAlert()`, so it will be available globally and you can call this function in your custom JS codes. See the following example, after you delete a record from your grid show deleted successful message like below,
-```
+```php
 'afterDelete' => 'function(link,success,data) {
   if (success) {
     var flash = generateAlert();
@@ -40,7 +42,7 @@ This widget will create a JS function `generateAlert()`, so it will be available
 ```
 
 You can set the flash messages like this in your controller or anywhere you need,
-```
+```php
 Yii::app()->user->setFlash('type', 'Message here');
 ```
 Replace `type` with available types
